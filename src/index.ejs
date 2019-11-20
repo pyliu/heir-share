@@ -10,6 +10,9 @@
         require('module').globalPaths.push('<%= htmlWebpackPlugin.options.nodeModules.replace(/\\/g, '\\\\') %>')
       </script>
     <% } %>
+    <style type="text/css">
+      /* global css*/
+    </style>
   </head>
   <body>
     <div id="app"></div>
@@ -19,7 +22,10 @@
         if (process.env.NODE_ENV !== 'development') window.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
       </script>
     <% } %>
-
+      <script type="text/javascript">
+        // global hardcode script
+        
+      </script>
     <!-- webpack builds are automatically injected -->
   </body>
 </html>
