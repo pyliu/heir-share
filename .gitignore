@@ -12,3 +12,4 @@ yarn.lock
 .git
 .travis.yml
 .babelrc
+package-lock.json
