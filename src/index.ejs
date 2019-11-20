@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="calculation for heir sharing ratio">
+    <meta name="author" content="LIU, PANG-YU">
     <title>登記案件繼承人應繼分(beta)</title>
     <% if (htmlWebpackPlugin.options.nodeModules) { %>
       <!-- Add `node_modules/` to global paths so `require` works properly in development -->
@@ -10,9 +12,6 @@
         require('module').globalPaths.push('<%= htmlWebpackPlugin.options.nodeModules.replace(/\\/g, '\\\\') %>')
       </script>
     <% } %>
-    <style type="text/css">
-      /* global css*/
-    </style>
   </head>
   <body>
     <div id="app"></div>
@@ -22,10 +21,10 @@
         if (process.env.NODE_ENV !== 'development') window.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
       </script>
     <% } %>
-      <script type="text/javascript">
-        // global hardcode script
-        
-      </script>
+    <script type="text/javascript">
+      // global hardcode script
+      
+    </script>
     <!-- webpack builds are automatically injected -->
   </body>
 </html>
