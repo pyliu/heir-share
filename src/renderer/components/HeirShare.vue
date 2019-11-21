@@ -286,7 +286,10 @@ export default {
 </script>
 
 <style>
-#wrapper { font-size: .8rem; }
+#wrapper {
+	font-family: "微軟正黑體", "Microsoft JhenHei", sans-serif;
+  font-size: .8rem;
+}
 .b-card-title {
    font-size: 1.2rem;
 }
