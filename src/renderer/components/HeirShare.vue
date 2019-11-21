@@ -54,8 +54,9 @@
           <h6>* 僅有法定繼承人，順序如下：</h6>
           <ol class="d-block">
             <li v-show="seen_s1_private_1">
-              直系卑親屬，以親等近者為優先。親等相同之男子有數人時，共同均分之。
+              人數：
               <input type="number" min="0" style="width:2rem" v-model="wizard.s1.private.child" @change="filter" />
+              【直系卑親屬，以親等近者為優先。親等相同之男子有數人時，共同均分之。】
               <br />
               <span v-show="seen_s1_private_1_msg">
                 直系卑親屬每人之應繼份為
@@ -63,8 +64,9 @@
               </span>
             </li>
             <li v-show="seen_s1_private_2">
-              配偶
+              人數：
               <input type="number" min="0" max="1" style="width:2rem" v-model="wizard.s1.private.spouse" @change="filter" />
+              【配偶】
               <br />
               <span v-show="seen_s1_private_2_msg">
                 配偶應繼份為
@@ -72,8 +74,9 @@
               </span>
             </li>
             <li v-show="seen_s1_private_3">
-              直系尊親屬，親等不同以親等近者為先，同一親等有2人以上，共同均分之。
+              人數：
               <input type="number" min="0" style="width:2rem" v-model="wizard.s1.private.parent" @change="filter" />
+              【直系尊親屬，親等不同以親等近者為先，同一親等有2人以上，共同均分之。】
               <br />
               <span v-show="seen_s1_private_3_msg">
                 直系尊親屬每人之應繼份為
@@ -81,8 +84,9 @@
               </span>
             </li>
             <li v-show="seen_s1_private_4">
-              戶主
+              人數：
               <input type="number" min="0" max="1" style="width:2rem" v-model="wizard.s1.private.household" @change="filter" />
+              【戶主】
               <br />
               <span v-show="seen_s1_private_4_msg">
                 戶主應繼份為
