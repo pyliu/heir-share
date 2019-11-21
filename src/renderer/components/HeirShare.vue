@@ -1,38 +1,106 @@
 <template>
-  <div>
-    <b-nav>
-      <b-nav-item active>Active</b-nav-item>
-      <b-nav-item>Link</b-nav-item>
-      <b-nav-item><b-button variant="outline-danger" @click="showAlert" size="sm">Alert</b-button></b-nav-item>
-      <b-nav-item disabled>---</b-nav-item>
-    </b-nav>
+  <div id="wrapper" class="m-2">
+    <div class="mb-2">
+      <span class="text-danger font-weight-bold">＊</span>
+      被繼承人持分：
+      <input type="number" min="1" style="width:4rem" v-model="heir_denominator" @change="filter" />
+      分之 1
+    </div>
+    <b-card v-show="wizard.s0.seen">
+      <b-card-body>
+        <b-card-title class="b-card-title text-primary">{{wizard.s0.legend}}</b-card-title>
+        <!-- <b-card-sub-title class="mb-2">--</b-card-sub-title> -->
+        <div class="row text-center">
+          <label class="col-4">
+            <input type="radio" v-model.number="wizard.s0.value" value="-1" @change="s0ValueSelected" /> 光復前【民國34年10月24日以前】
+          </label>
+          <label class="col-4">
+            <input type="radio" v-model.number="wizard.s0.value" value="0" @change="s0ValueSelected" /> 光復後【民國74年6月4日以前】
+          </label>
+          <label class="col-4">
+            <input type="radio" v-model.number="wizard.s0.value" value="1" @change="s0ValueSelected" /> 光復後【民國74年6月5日以後】
+          </label>
+        </div>
+      </b-card-body>
+    </b-card>
 
-    <b-alert
-      :show="bAlertShow"
-      dismissible
-      fade
-      :variant="bAlertType"
-      @dismiss-count-down="countDownChanged"
-    >This alert will dismiss after {{ bAlertDismissCountdown }} seconds...</b-alert>
+    <!-- step 1 光復前 -->
+    <b-card v-show="wizard.s1.seen">
+      <b-card-body>
+        <b-card-title class="b-card-title text-primary">{{wizard.s1.legend}}</b-card-title>
+        <div class="row">
+          <label class="col-6">
+            <input type="radio" v-model="wizard.s1.value" value="public" @change="s1ValueSelected" /> 家產
+          </label>
+          <label class="col-6">
+            <input type="radio" v-model="wizard.s1.value" value="private" @change="s1ValueSelected" /> 私產
+          </label>
+        </div>
+        <div class="border-top border-primary pt-2" v-show="seen_s1_public">
+          <ol class="d-block">
+            <li>
+              法定推定財產繼承人係
+              <strong class="text-primary">男子</strong>直系卑親屬，以親等近者為優先。親等相同之
+              <strong class="text-primary">男子</strong>有數人時，共同均分繼承。
+            </li>
+            <li>無法定之推定戶主繼承人時，指定及選定之財產繼承人繼承。</li>
+          </ol>人數： <input type="number" min="0" style="width:2rem" v-model="wizard.s1.public.count" @change="filter" />
+          <span v-show="seen_s1_pub_msg">
+            每人之應繼份為
+            <span class="text-primary">{{wizard.s1.public.count * heir_denominator}} 分之 1</span>。
+          </span>
+        </div>
+        <div class="border-top border-primary pt-2" v-show="seen_s1_private">
+          <h6>* 僅有法定繼承人，順序如下：</h6>
+          <ol class="d-block">
+            <li v-show="seen_s1_private_1">
+              直系卑親屬，以親等近者為優先。親等相同之男子有數人時，共同均分之。
+              <input type="number" min="0" style="width:2rem" v-model="wizard.s1.private.child" @change="filter" />
+              <br />
+              <span v-show="seen_s1_private_1_msg">
+                直系卑親屬每人之應繼份為
+                <span class="text-primary">{{wizard.s1.private.child * heir_denominator}} 分之 1</span>。
+              </span>
+            </li>
+            <li v-show="seen_s1_private_2">
+              配偶
+              <input type="number" min="0" max="1" style="width:2rem" v-model="wizard.s1.private.spouse" @change="filter" />
+              <br />
+              <span v-show="seen_s1_private_2_msg">
+                配偶應繼份為
+                <span class="text-primary">{{wizard.s1.private.spouse * heir_denominator}} 分之 1</span>。
+              </span>
+            </li>
+            <li v-show="seen_s1_private_3">
+              直系尊親屬，親等不同以親等近者為先，同一親等有2人以上，共同均分之。
+              <input type="number" min="0" style="width:2rem" v-model="wizard.s1.private.parent" @change="filter" />
+              <br />
+              <span v-show="seen_s1_private_3_msg">
+                直系尊親屬每人之應繼份為
+                <span class="text-primary">{{wizard.s1.private.parent * heir_denominator}} 分之 1</span>。
+              </span>
+            </li>
+            <li v-show="seen_s1_private_4">
+              戶主
+              <input type="number" min="0" max="1" style="width:2rem" v-model="wizard.s1.private.household" @change="filter" />
+              <br />
+              <span v-show="seen_s1_private_4_msg">
+                戶主應繼份為
+                <span class="text-primary">{{wizard.s1.private.household * heir_denominator}} 分之 1</span>。
+              </span>
+            </li>
+          </ol>
+        </div>
+      </b-card-body>
+    </b-card>
 
-    <span class="text-danger font-weight-bold">＊</span>
-    被繼承人持分：
-    <input type="number" min="1" v-model.lazy="heir_denominator" @change="filter" />
-    分之 1
-    <fieldset v-show="wizard.s0.seen">
-      <legend>{{wizard.s0.legend}}</legend>
-      <div class="row text-center">
-        <label class="col-4">
-          <input type="radio" v-model.number="wizard.s0.value" value="-1" @change="s0ValueSelected" /> 光復前【民國34年10月24日以前】
-        </label>
-        <label class="col-4">
-          <input type="radio" v-model.number="wizard.s0.value" value="0" @change="s0ValueSelected" /> 光復後【民國74年6月4日以前】
-        </label>
-        <label class="col-4">
-          <input type="radio" v-model.number="wizard.s0.value" value="1" @change="s0ValueSelected" /> 光復後【民國74年6月5日以後】
-        </label>
-      </div>
-    </fieldset>
+    <!-- step 2 光復後 -->
+    <b-card v-show="wizard.s2.seen">
+      <b-card-body>
+        <b-card-title class="b-card-title text-primary">{{wizard.s2.legend}}</b-card-title>
+        TODO ...
+      </b-card-body>
+    </b-card>
   </div>
 </template>
 
@@ -72,114 +140,10 @@ export default {
       heir_denominator: 1,
       prev_step: {},
       now_step: {},
-      breadcrumb: [],
-      bAlertDismissSecs: 5,
-      bAlertDismissCountdown: 0,
-      bAlertShow: false,
-      bAlertType: "info"
+      breadcrumb: []
     };
   },
-  computed: {
-    seen_s1_public: function() {
-      return this.wizard.s1.value == "public";
-    },
-    seen_s1_pub_msg: function() {
-      return this.wizard.s1.public.count > 0;
-    },
-    seen_s1_private: function() {
-      return this.wizard.s1.value == "private";
-    },
-    seen_s1_private_1: function() {
-      return (
-        this.wizard.s1.private.spouse == 0 &&
-        this.wizard.s1.private.parent == 0 &&
-        this.wizard.s1.private.household == 0
-      );
-    },
-    seen_s1_private_1_msg: function() {
-      return this.wizard.s1.private.child > 0;
-    },
-    seen_s1_private_2: function() {
-      return (
-        this.wizard.s1.private.child == 0 &&
-        this.wizard.s1.private.parent == 0 &&
-        this.wizard.s1.private.household == 0
-      );
-    },
-    seen_s1_private_2_msg: function() {
-      return this.wizard.s1.private.spouse > 0;
-    },
-    seen_s1_private_3: function() {
-      return (
-        this.wizard.s1.private.spouse == 0 &&
-        this.wizard.s1.private.child == 0 &&
-        this.wizard.s1.private.household == 0
-      );
-    },
-    seen_s1_private_3_msg: function() {
-      return this.wizard.s1.private.parent > 0;
-    },
-    seen_s1_private_4: function() {
-      return (
-        this.wizard.s1.private.spouse == 0 &&
-        this.wizard.s1.private.parent == 0 &&
-        this.wizard.s1.private.child == 0
-      );
-    },
-    seen_s1_private_4_msg: function() {
-      return this.wizard.s1.private.household > 0;
-    }
-  },
-  components: {
-    "counter-input": {
-      props: ["max", "min"],
-      data: function() {
-        return {
-          // parent use v-model syntax to get the value changed count
-          count: 0
-        };
-      },
-      template: `<span class="qty">
-                <span class="minus bg-dark" @click="minusClick">-</span>
-                <input type="number" class="count" value="0" :value="count" readonly>
-                <span class="plus bg-dark" @click="plusClick">+</span>
-            </span>`,
-      methods: {
-        minusClick: function(e) {
-          if (this.min) {
-            if (this.count > this.min) {
-              this.count--;
-            }
-          } else {
-            // default limit the min to 0
-            if (this.count > 0) {
-              this.count--;
-            }
-          }
-
-          // To emit input event to parent => v-model will use the event to update the value watched.
-          this.$emit("input", this.count);
-        },
-        plusClick: function(e) {
-          if (this.max) {
-            if (this.count < this.max) {
-              this.count++;
-            }
-          } else {
-            this.count++;
-          }
-          this.$emit("input", this.count);
-        }
-      }
-    }
-  },
   methods: {
-    countDownChanged(dismissCountDown) {
-        this.bAlertDismissCountdown = dismissCountDown;
-    },
-    showAlert() {
-        this.bAlertDismissCountdown = this.bAlertDismissSecs
-    },
     next: function(e) {
       this.debug = `next triggered ${e.target.tagName}`;
       switch (this.now_step) {
@@ -258,6 +222,58 @@ export default {
       }
     }
   },
+  computed: {
+    seen_s1_public: function() {
+      return this.wizard.s1.value == "public";
+    },
+    seen_s1_pub_msg: function() {
+      return this.wizard.s1.public.count > 0;
+    },
+    seen_s1_private: function() {
+      return this.wizard.s1.value == "private";
+    },
+    seen_s1_private_1: function() {
+      return (
+        this.wizard.s1.private.spouse == 0 &&
+        this.wizard.s1.private.parent == 0 &&
+        this.wizard.s1.private.household == 0
+      );
+    },
+    seen_s1_private_1_msg: function() {
+      return this.wizard.s1.private.child > 0;
+    },
+    seen_s1_private_2: function() {
+      return (
+        this.wizard.s1.private.child == 0 &&
+        this.wizard.s1.private.parent == 0 &&
+        this.wizard.s1.private.household == 0
+      );
+    },
+    seen_s1_private_2_msg: function() {
+      return this.wizard.s1.private.spouse > 0;
+    },
+    seen_s1_private_3: function() {
+      return (
+        this.wizard.s1.private.spouse == 0 &&
+        this.wizard.s1.private.child == 0 &&
+        this.wizard.s1.private.household == 0
+      );
+    },
+    seen_s1_private_3_msg: function() {
+      return this.wizard.s1.private.parent > 0;
+    },
+    seen_s1_private_4: function() {
+      return (
+        this.wizard.s1.private.spouse == 0 &&
+        this.wizard.s1.private.parent == 0 &&
+        this.wizard.s1.private.child == 0
+      );
+    },
+    seen_s1_private_4_msg: function() {
+      return this.wizard.s1.private.household > 0;
+    }
+  },
+  components: { },
   mounted: function() {
     // like jQuery ready
     this.now_step = this.wizard.s0;
@@ -270,4 +286,8 @@ export default {
 </script>
 
 <style>
+#wrapper { font-size: .8rem; }
+.b-card-title {
+   font-size: 1.2rem;
+}
 </style>
