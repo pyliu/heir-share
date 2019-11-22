@@ -1,5 +1,6 @@
 <template>
     <b-container id="wrapper" fluid :class="['mt-2']">
+        <b-img :src="require('@/assets/zhongli_logo.png')" fluid alt="Responsive image" height="100px"></b-img>
         <nav aria-label="breadcrumb" class="shadow">
             <!-- <b-breadcrumb :items="breadcrumb" :class="['bg-dark', 'text-white']"></b-breadcrumb> -->
             <ol class="breadcrumb bg-dark text-white">
@@ -14,9 +15,9 @@
         <div class="mb-2">
             <div class="float-right">
                 <b-btn-group size="sm">
-                    <b-button @click="prev">&lt;</b-button>
-                    <b-button>|</b-button>
-                    <b-button @click="next">&gt;</b-button>
+                    <b-button @click="prev" variant="outline-success">&lt;</b-button>
+                    <!-- <b-button variant="outline-dark">|</b-button> -->
+                    <b-button @click="next" variant="outline-success">&gt;</b-button>
                 </b-btn-group>
             </div>
             <div>
@@ -85,7 +86,8 @@
             </div>
         </div>
         <div class="border-top border-primary pt-2" v-show="seen_s1_private">
-            <h6>* 僅有法定繼承人，順序如下：</h6>
+            <h6 class="d-inline">* 僅有法定繼承人，順序如下：</h6>
+            <b-link href="#" @click="resetS1PrivateCounter">重設</b-link>
             <ol class="d-block">
             <li v-show="seen_s1_private_1">
                 人數：
@@ -177,7 +179,7 @@ let trim = text => {
 }
 
 let isEmpty = variable => {
-	if (variable === undefined || $.trim(variable) == "") {
+	if (variable === undefined || trim(variable) == "") {
 		return true;
 	}
 	
@@ -460,6 +462,12 @@ export default {
       let val = e.target.value.replace(/[^0-9]/g, "").replace(/^0+/, ""); // removing non-digit chars, leading zero 
       e.target.value = val || 0;
     },
+    resetS1PrivateCounter: function(e) {
+      this.wizard.s1.private.child = 0;
+      this.wizard.s1.private.spouse = 0;
+      this.wizard.s1.private.parent = 0;
+      this.wizard.s1.private.household = 0;
+    },
     s0ValueSelected: function(e) {
       this.prev_step = this.breadcrumb[this.breadcrumb.length - 1];
       switch (this.wizard.s0.value) {
@@ -579,5 +587,12 @@ export default {
 }
 .num-counter {
   width: 2.2rem;
+}
+fieldset {
+  font-size: 0.8rem;
+}
+fieldset legend {
+  font-size: 1.1rem;
+  font-weight: bold;
 }
 </style>
