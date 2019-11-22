@@ -1,17 +1,6 @@
 <template>
     <b-container id="wrapper" fluid :class="['mt-2']">
         <b-img :src="require('@/assets/zhongli_logo.png')" fluid center alt="Responsive image" height="100px"></b-img>
-        <!-- <nav aria-label="breadcrumb" class="shadow">
-            <b-breadcrumb :items="breadcrumb" :class="['bg-dark', 'text-white']"></b-breadcrumb>
-            <ol class="breadcrumb bg-dark text-white">
-                <li
-                v-for="(item, index) in breadcrumb"
-                v-bind:class="{active : index === (breadcrumb.length - 1)}"
-                >
-                <small>{{index == 0 ? item.legend : item.legend + "　/　"}}</small>
-                </li>
-            </ol>
-        </nav> -->
         <div class="my-2">
             <div class="float-right">
                 <b-btn-group size="sm">
@@ -218,6 +207,11 @@ export default {
       this.wizard.s2.value = "";
 
       this.heir_denominator = 1;
+      this.wizard.s1.public.count = 0;
+      this.wizard.s1.private.child = 0;
+      this.wizard.s1.private.spouse = 0;
+      this.wizard.s1.private.parent = 0;
+      this.wizard.s1.private.household = 0;
     },
     filterNonNumber: function(e) {
       let val = e.target.value.replace(/[^0-9]/g, "").replace(/^0+/, ""); // removing non-digit chars, leading zero 
