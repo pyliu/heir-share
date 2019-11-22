@@ -1,11 +1,11 @@
 <template>
-    <b-container id="wrapper" fluid :class="['mt-2']">
-        <b-img :src="require('@/assets/zhongli_logo.png')" fluid center alt="Responsive image" height="100px"></b-img>
+    <b-container id="wrapper" fluid>
+        <div class="bg-zhongli p-2">
+          <b-img :src="require('@/assets/zhongli_logo.png')" fluid center alt="Zhongli LOGO"></b-img>
+        </div>
         <div class="my-2">
             <div class="float-right">
-                <b-btn-group size="sm">
-                    <b-button @click="reset" variant="success">重設</b-button>
-                </b-btn-group>
+                <b-button pill @click="reset" variant="outline-primary" size="sm">重設</b-button>
             </div>
             <div>
                 <span class="text-danger font-weight-bold">＊</span>
@@ -22,19 +22,23 @@
                 分之 1
             </div>
         </div>
+
+        <h2 v-if="now_step" class="text-center"><b-badge pill variant="dark">{{now_step.title}}</b-badge></h2>
+
+        <!-- step 0 選擇繼承事實發生時間點 -->
         <fieldset class="border p-2" v-show="wizard.s0.seen">
-        <legend class="w-auto">{{wizard.s0.legend}}</legend>
-        <div class="row text-center">
-            <label class="col-4">
-            <input type="radio" v-model.number="wizard.s0.value" value="-1" @change="s0ValueSelected" /> 光復前【民國34年10月24日以前】
-            </label>
-            <label class="col-4">
-            <input type="radio" v-model.number="wizard.s0.value" value="0" @change="s0ValueSelected" /> 光復後【民國74年6月4日以前】
-            </label>
-            <label class="col-4">
-            <input type="radio" v-model.number="wizard.s0.value" value="1" @change="s0ValueSelected" /> 光復後【民國74年6月5日以後】
-            </label>
-        </div>
+          <legend class="w-auto">{{wizard.s0.legend}}</legend>
+          <div class="row text-center">
+              <label class="col-4">
+                <input type="radio" v-model.number="wizard.s0.value" value="-1" @change="s0ValueSelected" /> 光復前【民國34年10月24日以前】
+              </label>
+              <label class="col-4">
+                <input type="radio" v-model.number="wizard.s0.value" value="0" @change="s0ValueSelected" /> 光復後【民國74年6月4日以前】
+              </label>
+              <label class="col-4">
+                <input type="radio" v-model.number="wizard.s0.value" value="1" @change="s0ValueSelected" /> 光復後【民國74年6月5日以後】
+              </label>
+          </div>
         </fieldset>
 
         <!-- step 1 光復前 -->
@@ -87,7 +91,7 @@
                 v-model="wizard.s1.private.child"
                 @change="filterNonNumber"
                 />
-                <label v-show="!seen_s1_private_1_msg">直系卑親屬，以親等近者為優先。親等相同之男子有數人時，共同均分之。</label>
+                <label v-show="!seen_s1_private_1_msg" v-b-popover.hover.top="'以親等近者為優先。親等相同之男子有數人時，共同均分之'" title="直系卑親屬">直系卑親屬</label>
                 <h5 class="d-inline">
                   <b-badge v-show="seen_s1_private_1_msg" variant="warning">
                     直系卑親屬每人之應繼份為
@@ -105,7 +109,7 @@
                 v-model="wizard.s1.private.spouse"
                 @change="filterNonNumber"
                 />
-                <label v-show="!seen_s1_private_2_msg">配偶。</label>
+                <label v-show="!seen_s1_private_2_msg">配偶</label>
                 <h5 class="d-inline">
                   <b-badge v-show="seen_s1_private_2_msg" variant="warning">
                     配偶應繼份為
@@ -122,7 +126,7 @@
                 v-model="wizard.s1.private.parent"
                 @change="filterNonNumber"
                 />
-                <label v-show="!seen_s1_private_3_msg">直系尊親屬，親等不同以親等近者為先，同一親等有2人以上，共同均分之。</label>
+                <label v-show="!seen_s1_private_3_msg" v-b-popover.hover.bottom="'親等不同以親等近者為先，同一親等有2人以上，共同均分之'" title="直系尊親屬">直系尊親屬</label>
                 <h5 class="d-inline">
                   <b-badge v-show="seen_s1_private_3_msg" variant="warning">
                     直系尊親屬每人之應繼份為
@@ -140,7 +144,7 @@
                 v-model="wizard.s1.private.household"
                 @change="filterNonNumber"
                 />
-                <label v-show="!seen_s1_private_4_msg">戶主。</label>
+                <label v-show="!seen_s1_private_4_msg">戶主</label>
                 <h5 class="d-inline">
                   <b-badge v-show="seen_s1_private_4_msg" variant="warning">
                     戶主應繼份為
@@ -212,6 +216,8 @@ export default {
       this.wizard.s1.private.spouse = 0;
       this.wizard.s1.private.parent = 0;
       this.wizard.s1.private.household = 0;
+
+      this.now_step = this.wizard.s0;
     },
     filterNonNumber: function(e) {
       let val = e.target.value.replace(/[^0-9]/g, "").replace(/^0+/, ""); // removing non-digit chars, leading zero 
@@ -227,14 +233,12 @@ export default {
       switch (this.wizard.s0.value) {
         case -1:
           this.now_step = this.wizard.s1;
-          this.now_step.legend = "光復前【民國34年10月24日以前】";
+          //this.now_step.legend = "光復前【民國34年10月24日以前】";
           break;
         case 0:
         case 1:
           this.now_step = this.wizard.s2;
-          this.now_step.legend =
-            "光復後【民國74年6月" +
-            (this.wizard.s0.value == 1 ? "5日以後】" : "4日以前】");
+          //this.now_step.legend = "光復後【民國74年6月" + (this.wizard.s0.value == 1 ? "5日以後】" : "4日以前】");
           break;
         default:
           console.error(`Not supported: ${this.wizard.s0.value}.`);
@@ -314,6 +318,7 @@ export default {
   components: {},
   mounted: function() {
     // like jQuery ready
+    this.now_step = this.wizard.s0;
   }
 };
 </script>
@@ -322,6 +327,9 @@ export default {
 #wrapper {
   font-family: "微軟正黑體", "Microsoft JhenHei", sans-serif;
   font-size: 0.85rem;
+}
+.bg-zhongli {
+	background-color: #7dc750;
 }
 .num-counter {
   width: 2.2rem;
@@ -332,5 +340,8 @@ fieldset {
 fieldset legend {
   font-size: 1.1rem;
   font-weight: bold;
+}
+.popover .b-popover {
+  font-size: 0.75rem;
 }
 </style>
