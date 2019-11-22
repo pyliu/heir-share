@@ -1,8 +1,8 @@
 <template>
     <b-container id="wrapper" fluid :class="['mt-2']">
-        <b-img :src="require('@/assets/zhongli_logo.png')" fluid alt="Responsive image" height="100px"></b-img>
-        <nav aria-label="breadcrumb" class="shadow">
-            <!-- <b-breadcrumb :items="breadcrumb" :class="['bg-dark', 'text-white']"></b-breadcrumb> -->
+        <b-img :src="require('@/assets/zhongli_logo.png')" fluid center alt="Responsive image" height="100px"></b-img>
+        <!-- <nav aria-label="breadcrumb" class="shadow">
+            <b-breadcrumb :items="breadcrumb" :class="['bg-dark', 'text-white']"></b-breadcrumb>
             <ol class="breadcrumb bg-dark text-white">
                 <li
                 v-for="(item, index) in breadcrumb"
@@ -11,8 +11,8 @@
                 <small>{{index == 0 ? item.legend : item.legend + "　/　"}}</small>
                 </li>
             </ol>
-        </nav>
-        <div class="mb-2">
+        </nav> -->
+        <div class="my-2">
             <div class="float-right">
                 <b-btn-group size="sm">
                     <b-button @click="prev" variant="outline-success">&lt;</b-button>
@@ -589,7 +589,7 @@ export default {
   width: 2.2rem;
 }
 fieldset {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 fieldset legend {
   font-size: 1.1rem;
