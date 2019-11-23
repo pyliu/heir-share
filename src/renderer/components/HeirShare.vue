@@ -23,7 +23,7 @@
             </div>
         </div>
 
-        <h2 v-if="now_step" class="text-center"><b-badge pill variant="dark">{{now_step.title}}</b-badge></h2>
+        <h4 v-if="now_step"><b-badge pill>{{now_step.title}}</b-badge></h4>
 
         <!-- step 0 選擇繼承事實發生時間點 -->
         <fieldset class="border p-2" v-show="wizard.s0.seen">
@@ -335,7 +335,7 @@ export default {
   width: 2.2rem;
 }
 fieldset {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
 }
 fieldset legend {
   font-size: 1.1rem;
