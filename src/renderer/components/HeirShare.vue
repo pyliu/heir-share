@@ -341,7 +341,7 @@ fieldset legend {
   font-size: 1.1rem;
   font-weight: bold;
 }
-.popover .b-popover {
-  font-size: 0.75rem;
+#copyright {
+  font-size: 0.65rem;
 }
 </style>
