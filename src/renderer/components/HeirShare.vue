@@ -52,7 +52,7 @@
             <input type="radio" v-model="wizard.s1.value" value="private" @change="s1ValueSelected" /> 私產
             </label>
         </div>
-        <div class="border-top border-primary pt-2" v-show="seen_s1_public">
+        <div class="border-top border-dark pt-2" v-show="seen_s1_public">
             <ol class="d-block">
             <li>
                 法定推定財產繼承人係
@@ -78,7 +78,7 @@
               </h5>
             </div>
         </div>
-        <div class="border-top border-primary pt-2" v-show="seen_s1_private">
+        <div class="border-top border-dark pt-2" v-show="seen_s1_private">
             <h6 class="d-inline">* 僅有法定繼承人，順序如下：</h6>
             <b-link href="#" @click="resetS1PrivateCounter">重設</b-link>
             <ol class="d-block">
