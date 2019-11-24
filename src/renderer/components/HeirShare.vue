@@ -186,7 +186,30 @@
         </label>
       </div>
       <div class="border-top border-dark pt-2" v-show="seen_s2_UI">
-        <!-- TODO -->
+        <ol class="d-block">
+          <li>
+            人數：
+            <input
+              type="number"
+              min="0"
+              class="num-counter"
+              v-model="wizard.s2.children"
+              @change="filterNonNumber"
+            />
+            <label
+              v-b-popover.hover.top="'TODO'"
+              title="直系卑親屬"
+            >直系卑親屬<span v-show="seen_raising_children">(含養子女)</span></label>
+            <h5 class="d-inline">
+              <b-badge v-show="true" variant="warning">
+                直系卑親屬每人之應繼份為
+                <b-badge
+                  variant="light"
+                >{{Math.abs(wizard.s2.children * heir_denominator)}} 分之 1</b-badge>
+              </b-badge>
+            </h5>
+          </li>
+        </ol>
       </div>
     </fieldset>
   </b-container>
@@ -222,7 +245,9 @@ export default {
           title: "步驟2，光復後時段區間",
           legend: "時段區間",
           seen: false,
-          value: ""
+          value: "",
+          children: 0,
+          raising_children: 0
         }
       },
       toastCount: 0,
@@ -369,6 +394,9 @@ export default {
     },
     seen_s2_UI: function() {
       return this.wizard.s2.value;
+    },
+    seen_raising_children: function() {
+      return this.wizard.s2.value == "7465";
     }
   },
   components: {},
