@@ -31,10 +31,10 @@
     <fieldset class="border p-2" v-show="wizard.s0.seen">
       <legend class="w-auto">{{wizard.s0.legend}}</legend>
       <div class="row text-center">
-        <label class="col" v-b-popover.hover.bottom="'民國34年10月24日以前'" title="光復前">
+        <label class="col" v-b-popover.hover.bottom="{ customClass: 'my-popover', content: '民國34年10月24日以前' }">
           <input type="radio" v-model.number="wizard.s0.value" value="-1" @change="s0ValueSelected" /> 光復前
         </label>
-        <label class="col" v-b-popover.hover.bottom="'民國34年10月25日以後'" title="光復後">
+        <label class="col" v-b-popover.hover.bottom="{ customClass: 'my-popover', content: '民國34年10月25日以後' }">
           <input type="radio" v-model.number="wizard.s0.value" value="0" @change="s0ValueSelected" /> 光復後
         </label>
         <!-- <label class="col">
@@ -95,8 +95,7 @@
             />
             <label
               v-show="!seen_s1_private_1_msg"
-              v-b-popover.hover.top="'以親等近者為優先。親等相同之男子有數人時，共同均分之'"
-              title="直系卑親屬"
+              v-b-popover.hover.top="{ customClass: 'my-popover', content:'以親等近者為優先。親等相同之男子有數人時，共同均分之'}"
             >直系卑親屬</label>
             <h5 class="d-inline">
               <b-badge v-show="seen_s1_private_1_msg" variant="warning">
@@ -138,8 +137,7 @@
             />
             <label
               v-show="!seen_s1_private_3_msg"
-              v-b-popover.hover.bottom="'親等不同以親等近者為先，同一親等有2人以上，共同均分之'"
-              title="直系尊親屬"
+              v-b-popover.hover.bottom="{ customClass: 'my-popover', content: '親等不同以親等近者為先，同一親等有2人以上，共同均分之'}"
             >直系尊親屬</label>
             <h5 class="d-inline">
               <b-badge v-show="seen_s1_private_3_msg" variant="warning">
@@ -198,7 +196,6 @@
             />
             <label
               v-b-popover.hover.top="'TODO'"
-              title="直系卑親屬"
             >直系卑親屬<span v-show="seen_raising_children">(含養子女)</span></label>
             <h5 class="d-inline">
               <b-badge v-show="true" variant="warning">
@@ -256,37 +253,53 @@ export default {
     };
   },
   methods: {
-    makeToast: function(content, title = "通知", append = false) {
+    makeToast: function(content, opts) {
       if (content) {
         this.toastCount++;
-        this.$bvToast.toast(content, {
-          title: title,
+        this.$bvToast.toast(content, Object.assign({
+          title: "通知",
           autoHideDelay: 5000,
-          appendToast: append
-        });
+          appendToast: false,
+          noAutoHide: false,
+          noHoverPause: false,
+          noCloseButton: true,
+          solid: false,
+          variant: "default",
+          toaster: "b-toaster-bottom-right",
+          headerClass: "my-toast-header",
+          bodyClass: "my-toast-body"
+        }, opts));
       }
     },
     reset: function(e) {
       this.wizard.s0.seen = true;
-      this.wizard.s1.seen = false;
-      this.wizard.s2.seen = false;
-
       this.wizard.s0.value = "";
-      this.wizard.s1.value = "";
-      this.wizard.s2.value = "";
-
       this.heir_denominator = 1;
+      this.now_step = this.wizard.s0;
+      this.resetS1(e);
+      this.resetS2(e);
+    },
+    resetS1: function(e) {
+      this.wizard.s1.seen = false;
+      this.wizard.s1.value = "";
       this.wizard.s1.public.count = 0;
       this.wizard.s1.private.child = 0;
       this.wizard.s1.private.spouse = 0;
       this.wizard.s1.private.parent = 0;
       this.wizard.s1.private.household = 0;
-
-      this.now_step = this.wizard.s0;
+    },
+    resetS2: function(e) {
+      this.wizard.s2.seen = false;
+      this.wizard.s2.value = "";
+      this.wizard.s2.children = 0;
     },
     filterNonNumber: function(e) {
       let val = e.target.value.replace(/[^0-9]/g, "").replace(/^0+/, ""); // removing non-digit chars, leading zero
       e.target.value = Math.abs(val || 0);
+      this.makeToast(e.target.value, {
+        variant: "danger",
+        noAutoHide: true
+      });
     },
     resetS1PrivateCounter: function(e) {
       this.wizard.s1.private.child = 0;
@@ -427,5 +440,15 @@ fieldset legend {
 }
 #copyright {
   font-size: 0.65rem;
+}
+.my-toast-header, .my-toast-body {
+  font-size: 0.75rem !important;
+  padding: 2px 2px 2px 10px !important;
+}
+.b-toaster-slot {
+  width: 33% !important;
+}
+.my-popover {
+  font-size: 0.70rem !important;
 }
 </style>
