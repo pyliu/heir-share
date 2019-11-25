@@ -186,7 +186,7 @@
       <div class="border-top border-dark pt-2" v-show="seen_s2_UI">
         <ol class="d-block">
           <li>
-            人數：
+            <label>直系卑親屬<span v-show="seen_s2_raising_children">(含養子女)</span></label>人數：
             <input
               type="number"
               min="0"
@@ -194,17 +194,32 @@
               v-model="wizard.s2.children"
               @change="filterNonNumber"
             />
-            <label
-              v-b-popover.hover.top="'TODO'"
-            >直系卑親屬<span v-show="seen_raising_children">(含養子女)</span></label>
-            <h5 class="d-inline">
-              <b-badge v-show="true" variant="warning">
+            <h5 v-show="seen_s2_children_msg">
+              <b-badge variant="warning">
                 直系卑親屬每人之應繼份為
                 <b-badge
                   variant="light"
-                >{{Math.abs(wizard.s2.children * heir_denominator)}} 分之 1</b-badge>
+                >{{Math.abs(calS2ChildrenRight())}} 分之 1</b-badge>
               </b-badge>
             </h5>
+            <div v-show="!seen_s2_raising_children">
+              <label>養子女</label>人數：
+              <input
+                type="number"
+                min="0"
+                class="num-counter"
+                v-model="wizard.s2.raising_children"
+                @change="filterNonNumber"
+              />
+              <h5 v-show="seen_s2_raising_children_msg">
+                <b-badge variant="warning">
+                  養子女每人之應繼份為
+                  <b-badge
+                    variant="light"
+                  >{{Math.abs(calS2ChildrenDenominator() / wizard.s2.raising_children * heir_denominator)}} 分之 1</b-badge>
+                </b-badge>
+              </h5>
+            </div>
           </li>
         </ol>
       </div>
@@ -292,13 +307,15 @@ export default {
       this.wizard.s2.seen = false;
       this.wizard.s2.value = "";
       this.wizard.s2.children = 0;
+      this.wizard.s2.raising_children = 0;
     },
     filterNonNumber: function(e) {
       let val = e.target.value.replace(/[^0-9]/g, "").replace(/^0+/, ""); // removing non-digit chars, leading zero
       e.target.value = Math.abs(val || 0);
       this.makeToast(e.target.value, {
         variant: "danger",
-        noAutoHide: true
+        noAutoHide: false,
+        title: e.target.id
       });
     },
     resetS1PrivateCounter: function(e) {
@@ -306,6 +323,10 @@ export default {
       this.wizard.s1.private.spouse = 0;
       this.wizard.s1.private.parent = 0;
       this.wizard.s1.private.household = 0;
+    },
+    resetS2Counter: function(e) {
+      this.wizard.s2.children = 0;
+      this.wizard.s2.raising_children = 0;
     },
     s0ValueSelected: function(e) {
       switch (this.wizard.s0.value) {
@@ -353,6 +374,17 @@ export default {
           console.error(`Not supported: ${this.wizard.s2.value}.`);
           return;
       }
+      this.resetS2Counter(e);
+    },
+    calS2ChildrenDenominator: function() {
+      let val = parseInt(this.wizard.s2.children * 2) + parseInt(this.wizard.s2.raising_children);
+      console.log(val);
+      return val;
+    },
+    calS2ChildrenRight: function() {
+      let val = (this.calS2ChildrenDenominator() / 2) * this.wizard.s2.children * this.heir_denominator;
+      console.log(val);
+      return val;
     }
   },
   computed: {
@@ -408,8 +440,14 @@ export default {
     seen_s2_UI: function() {
       return this.wizard.s2.value;
     },
-    seen_raising_children: function() {
+    seen_s2_children_msg: function() {
+      return this.wizard.s2.children > 0;
+    },
+    seen_s2_raising_children: function() {
       return this.wizard.s2.value == "7465";
+    },
+    seen_s2_raising_children_msg: function() {
+      return this.wizard.s2.raising_children > 0;
     }
   },
   components: {},
