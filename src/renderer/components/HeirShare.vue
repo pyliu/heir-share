@@ -216,7 +216,7 @@
                   養子女每人之應繼份為
                   <b-badge
                     variant="light"
-                  >{{Math.abs(calS2ChildrenDenominator() / wizard.s2.raising_children * heir_denominator)}} 分之 1</b-badge>
+                  >{{Math.abs(calS2RaisingChildrenRight())}} 分之 1</b-badge>
                 </b-badge>
               </h5>
             </div>
@@ -378,12 +378,14 @@ export default {
     },
     calS2ChildrenDenominator: function() {
       let val = parseInt(this.wizard.s2.children * 2) + parseInt(this.wizard.s2.raising_children);
-      console.log(val);
       return val;
     },
     calS2ChildrenRight: function() {
-      let val = (this.calS2ChildrenDenominator() / 2) * this.wizard.s2.children * this.heir_denominator;
-      console.log(val);
+      let val = (this.calS2ChildrenDenominator() / 2) * this.heir_denominator;
+      return val;
+    },
+    calS2RaisingChildrenRight: function() {
+      let val = this.calS2ChildrenDenominator() * this.heir_denominator;
       return val;
     }
   },
