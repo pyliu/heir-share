@@ -31,10 +31,16 @@
     <fieldset class="border p-2" v-show="wizard.s0.seen">
       <legend class="w-auto">{{wizard.s0.legend}}</legend>
       <div class="row text-center">
-        <label class="col" v-b-popover.hover.bottom="{ customClass: 'my-popover', content: '民國34年10月24日以前' }">
+        <label
+          class="col"
+          v-b-popover.hover.bottom="{ customClass: 'my-popover', content: '民國34年10月24日以前' }"
+        >
           <input type="radio" v-model.number="wizard.s0.value" value="-1" @change="s0ValueSelected" /> 光復前
         </label>
-        <label class="col" v-b-popover.hover.bottom="{ customClass: 'my-popover', content: '民國34年10月25日以後' }">
+        <label
+          class="col"
+          v-b-popover.hover.bottom="{ customClass: 'my-popover', content: '民國34年10月25日以後' }"
+        >
           <input type="radio" v-model.number="wizard.s0.value" value="0" @change="s0ValueSelected" /> 光復後
         </label>
         <!-- <label class="col">
@@ -186,7 +192,10 @@
       <div class="border-top border-dark pt-2" v-show="seen_s2_UI">
         <ol class="d-block">
           <li>
-            <label>直系卑親屬<span v-show="seen_s2_raising_children">(含養子女)</span></label>人數：
+            <label>
+              直系卑親屬
+              <span v-show="seen_s2_raising_children">(含養子女)</span>
+            </label>人數：
             <input
               type="number"
               min="0"
@@ -197,9 +206,7 @@
             <h5 v-show="seen_s2_children_msg">
               <b-badge variant="warning">
                 直系卑親屬每人之應繼份為
-                <b-badge
-                  variant="light"
-                >{{Math.abs(calS2ChildrenRight())}} 分之 1</b-badge>
+                <b-badge variant="light">{{calS2ChildrenRight()}}</b-badge>
               </b-badge>
             </h5>
             <div v-show="!seen_s2_raising_children">
@@ -214,9 +221,7 @@
               <h5 v-show="seen_s2_raising_children_msg">
                 <b-badge variant="warning">
                   養子女每人之應繼份為
-                  <b-badge
-                    variant="light"
-                  >{{Math.abs(calS2RaisingChildrenRight())}} 分之 1</b-badge>
+                  <b-badge variant="light">{{calS2RaisingChildrenRight()}}</b-badge>
                 </b-badge>
               </h5>
             </div>
@@ -271,19 +276,25 @@ export default {
     makeToast: function(content, opts) {
       if (content) {
         this.toastCount++;
-        this.$bvToast.toast(content, Object.assign({
-          title: "通知",
-          autoHideDelay: 5000,
-          appendToast: false,
-          noAutoHide: false,
-          noHoverPause: false,
-          noCloseButton: true,
-          solid: false,
-          variant: "default",
-          toaster: "b-toaster-bottom-right",
-          headerClass: "my-toast-header",
-          bodyClass: "my-toast-body"
-        }, opts));
+        this.$bvToast.toast(
+          content,
+          Object.assign(
+            {
+              title: "通知",
+              autoHideDelay: 5000,
+              appendToast: false,
+              noAutoHide: false,
+              noHoverPause: false,
+              noCloseButton: true,
+              solid: false,
+              variant: "default",
+              toaster: "b-toaster-bottom-right",
+              headerClass: "my-toast-header",
+              bodyClass: "my-toast-body"
+            },
+            opts
+          )
+        );
       }
     },
     reset: function(e) {
@@ -377,13 +388,31 @@ export default {
       this.resetS2Counter(e);
     },
     calS2ChildrenDenominator: function() {
-      return  parseInt(this.wizard.s2.children * 2) + parseInt(this.wizard.s2.raising_children);
+      return (
+        parseInt(this.wizard.s2.children * 2) +
+        parseInt(this.wizard.s2.raising_children)
+      );
     },
     calS2ChildrenRight: function() {
-      return (this.calS2ChildrenDenominator() / 2) * this.heir_denominator;
+      let deno = (this.calS2ChildrenDenominator() / 2) * this.heir_denominator;
+      if (deno == 0) {
+        return "";
+      }
+      let value = 1.0 / deno;
+      var i = 1,
+        j = 1;
+      while (Math.abs(i / j - value) > 0.001) {
+        if (i / j > value) {
+          j++;
+        } else if (i / j < value) {
+          i++;
+        }
+      }
+      return `${j} 分之 ${i}`;
     },
     calS2RaisingChildrenRight: function() {
-      return this.calS2ChildrenDenominator() * this.heir_denominator;
+      let deno = this.calS2ChildrenDenominator() * this.heir_denominator;
+      return `${deno} 分之 1`;
     }
   },
   computed: {
@@ -478,7 +507,8 @@ fieldset legend {
 #copyright {
   font-size: 0.65rem;
 }
-.my-toast-header, .my-toast-body {
+.my-toast-header,
+.my-toast-body {
   font-size: 0.75rem !important;
   padding: 2px 2px 2px 10px !important;
 }
@@ -486,6 +516,6 @@ fieldset legend {
   width: 33% !important;
 }
 .my-popover {
-  font-size: 0.70rem !important;
+  font-size: 0.7rem !important;
 }
 </style>
