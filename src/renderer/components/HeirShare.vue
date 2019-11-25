@@ -377,16 +377,13 @@ export default {
       this.resetS2Counter(e);
     },
     calS2ChildrenDenominator: function() {
-      let val = parseInt(this.wizard.s2.children * 2) + parseInt(this.wizard.s2.raising_children);
-      return val;
+      return  parseInt(this.wizard.s2.children * 2) + parseInt(this.wizard.s2.raising_children);
     },
     calS2ChildrenRight: function() {
-      let val = (this.calS2ChildrenDenominator() / 2) * this.heir_denominator;
-      return val;
+      return (this.calS2ChildrenDenominator() / 2) * this.heir_denominator;
     },
     calS2RaisingChildrenRight: function() {
-      let val = this.calS2ChildrenDenominator() * this.heir_denominator;
-      return val;
+      return this.calS2ChildrenDenominator() * this.heir_denominator;
     }
   },
   computed: {
