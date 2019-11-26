@@ -189,7 +189,7 @@
           <input type="radio" v-model="wizard.s2.value" value="7465" @change="s2ValueSelected" /> 74年6月5日以後
         </label>
       </div>
-      <div class="border-top border-dark pt-2" v-show="seen_s2_UI">
+      <div class="border-top border-dark pt-2" v-show="seen_s2_counters">
         <ol class="d-block">
           <li>
             <label>
@@ -465,7 +465,7 @@ export default {
     seen_s1_private_4_msg: function() {
       return this.wizard.s1.private.household > 0;
     },
-    seen_s2_UI: function() {
+    seen_s2_counters: function() {
       return this.wizard.s2.value;
     },
     seen_s2_children_msg: function() {
