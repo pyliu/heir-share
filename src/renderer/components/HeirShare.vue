@@ -206,7 +206,7 @@
             <h5 v-show="seen_s2_children_msg">
               <b-badge variant="warning">
                 直系卑親屬每人之應繼份為
-                <b-badge variant="light">{{calS2ChildrenRight()}}</b-badge>
+                <b-badge variant="light">{{val_s2_children_ratio}}</b-badge>
               </b-badge>
             </h5>
             <div v-show="!seen_s2_raising_children">
@@ -221,7 +221,7 @@
               <h5 v-show="seen_s2_raising_children_msg">
                 <b-badge variant="warning">
                   養子女每人之應繼份為
-                  <b-badge variant="light">{{calS2RaisingChildrenRight()}}</b-badge>
+                  <b-badge variant="light">{{val_s2_raising_children_ratio}}</b-badge>
                 </b-badge>
               </h5>
             </div>
@@ -386,36 +386,23 @@ export default {
           return;
       }
       this.resetS2Counter(e);
-    },
-    calS2ChildrenDenominator: function() {
+    }
+  },
+  computed: {
+    val_s2_children_deno: function() {
       return (
         parseInt(this.wizard.s2.children * 2) +
         parseInt(this.wizard.s2.raising_children)
       );
     },
-    calS2ChildrenRight: function() {
-      let deno = (this.calS2ChildrenDenominator() / 2) * this.heir_denominator;
-      if (deno == 0) {
-        return "";
-      }
-      let value = 1.0 / deno;
-      var i = 1,
-        j = 1;
-      while (Math.abs(i / j - value) > 0.001) {
-        if (i / j > value) {
-          j++;
-        } else if (i / j < value) {
-          i++;
-        }
-      }
-      return `${j} 分之 ${i}`;
+    val_s2_children_ratio: function() {
+      let deno = this.val_s2_children_deno * this.heir_denominator;
+      return this.wizard.s2.raising_children > 0 ? `${deno} 分之 2` : `${deno / 2} 分之 1`;
     },
-    calS2RaisingChildrenRight: function() {
-      let deno = this.calS2ChildrenDenominator() * this.heir_denominator;
+    val_s2_raising_children_ratio: function() {
+      let deno = this.val_s2_children_deno * this.heir_denominator;
       return `${deno} 分之 1`;
-    }
-  },
-  computed: {
+    },
     seen_s1_public: function() {
       return this.wizard.s1.value == "public";
     },
