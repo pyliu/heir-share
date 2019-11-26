@@ -400,11 +400,11 @@ export default {
     filterNonNumber: function(e) {
       let val = e.target.value.replace(/[^0-9]/g, "").replace(/^0+/, ""); // removing non-digit chars, leading zero
       e.target.value = Math.abs(val || 0);
-      this.makeToast(e.target.value, {
-        variant: "danger",
-        noAutoHide: false,
-        title: e.target.id
-      });
+      // this.makeToast(e.target.value, {
+      //   variant: "danger",
+      //   noAutoHide: false,
+      //   title: e.target.id
+      // });
     },
     resetS1PrivateCounter: function(e) {
       this.wizard.s1.private.child = 0;
@@ -470,7 +470,7 @@ export default {
     }
   },
   computed: {
-    val_s2_total_deno: function() {
+    val_s2_children_spouse_total_deno: function() {
       return (
         parseInt(this.wizard.s2.children * 2) +
         parseInt(this.wizard.s2.raising_children) +
@@ -478,24 +478,43 @@ export default {
       ) * this.heir_denominator;
     },
     val_s2_spouse_ratio: function() {
-      let deno = this.val_s2_total_deno;
-      return this.wizard.s2.raising_children > 0 ? `${deno} 分之 2` : `${deno / 2} 分之 1`;
+      if (this.wizard.s2.children > 0 || this.wizard.s2.raising_children > 0) {
+        let deno = this.val_s2_children_spouse_total_deno;
+        return this.wizard.s2.raising_children > 0 ? `${deno} 分之 2` : `${deno / 2} 分之 1`;
+      } else if (this.wizard.s2.parents > 0 || this.wizard.s2.brothers > 0) {
+        return `${this.heir_denominator * 2} 分之 1`;
+      } else if (this.wizard.s2.grandparents > 0) {
+        return `${this.heir_denominator * 3} 分之 2`;
+      }
+      return `${this.heir_denominator} 分之 1`;
     },
     val_s2_children_ratio: function() {
-      let deno = this.val_s2_total_deno;
+      let deno = this.val_s2_children_spouse_total_deno;
       return this.wizard.s2.raising_children > 0 ? `${deno} 分之 2` : `${deno / 2} 分之 1`;
     },
     val_s2_raising_children_ratio: function() {
-      return `${this.val_s2_total_deno} 分之 1`;
+      return `${this.val_s2_children_spouse_total_deno} 分之 1`;
     },
     val_s2_parents_ratio: function() {
-
+      if (this.wizard.s2.spouse == 0) {
+        return `${this.wizard.s2.parents * this.heir_denominator} 分之 1`;
+      } else {
+        return `${this.wizard.s2.parents * 2 * this.heir_denominator} 分之 1`;
+      }
     },
     val_s2_brothers_ratio: function() {
-
+      if (this.wizard.s2.spouse == 0) {
+        return `${this.wizard.s2.brothers * this.heir_denominator} 分之 1`;
+      } else {
+        return `${this.wizard.s2.brothers * 2 * this.heir_denominator} 分之 1`;
+      }
     },
     val_s2_grandparents_ratio: function() {
-
+      if (this.wizard.s2.spouse == 0) {
+        return `${this.wizard.s2.grandparents * this.heir_denominator} 分之 1`;
+      } else {
+        return `${this.wizard.s2.grandparents * 3 * this.heir_denominator} 分之 1`;
+      }
     },
     seen_s1_public: function() {
       return this.wizard.s1.value == "public";
