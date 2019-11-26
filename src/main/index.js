@@ -21,7 +21,8 @@ function createWindow () {
     height: 590,
     useContentSize: true,
     width: 518,
-    show: false 
+    show: false,
+    resizable: false
   })
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
