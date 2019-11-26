@@ -209,24 +209,26 @@
               </b-badge>
             </span>
           </li>
-          <li>
-            <label>
-              直系卑親屬
-              <span v-show="seen_s2_raising_children">(含養子女)</span>
-            </label>人數：
-            <input
-              type="number"
-              min="0"
-              class="num-counter"
-              v-model="wizard.s2.children"
-              @change="filterNonNumber"
-            />
-            <span v-show="seen_s2_children_msg" class="h5">
-              <b-badge variant="warning">
-                應繼份為
-                <b-badge variant="light">{{val_s2_children_ratio}}</b-badge>
-              </b-badge>
-            </span>
+          <li v-show="seen_s2_children">
+            <div>
+              <label>
+                直系卑親屬
+                <span v-show="seen_s2_raising_children">(含養子女)</span>
+              </label>人數：
+              <input
+                type="number"
+                min="0"
+                class="num-counter"
+                v-model="wizard.s2.children"
+                @change="filterNonNumber"
+              />
+              <span v-show="seen_s2_children_msg" class="h5">
+                <b-badge variant="warning">
+                  應繼份為
+                  <b-badge variant="light">{{val_s2_children_ratio}}</b-badge>
+                </b-badge>
+              </span>
+            </div>
             <div v-show="!seen_s2_raising_children">
               <label>養子女</label>人數：
               <input
@@ -243,6 +245,54 @@
                 </b-badge>
               </span>
             </div>
+          </li>
+          <li v-show="seen_s2_parents">
+            <label>父母</label>人數：
+            <input
+              type="number"
+              min="0"
+              class="num-counter"
+              v-model="wizard.s2.parents"
+              @change="filterNonNumber"
+            />
+            <span v-show="seen_s2_parents_msg" class="h5">
+              <b-badge variant="warning">
+                應繼份為
+                <b-badge variant="light">{{val_s2_parents_ratio}}</b-badge>
+              </b-badge>
+            </span>
+          </li>
+          <li v-show="seen_s2_brothers">
+            <label>兄弟姊妹</label>人數：
+            <input
+              type="number"
+              min="0"
+              class="num-counter"
+              v-model="wizard.s2.brothers"
+              @change="filterNonNumber"
+            />
+            <span v-show="seen_s2_brothers_msg" class="h5">
+              <b-badge variant="warning">
+                應繼份為
+                <b-badge variant="light">{{val_s2_brothers_ratio}}</b-badge>
+              </b-badge>
+            </span>
+          </li>
+          <li v-show="seen_s2_grandparents">
+            <label>祖父母</label>人數：
+            <input
+              type="number"
+              min="0"
+              class="num-counter"
+              v-model="wizard.s2.grandparents"
+              @change="filterNonNumber"
+            />
+            <span v-show="seen_s2_grandparents_msg" class="h5">
+              <b-badge variant="warning">
+                應繼份為
+                <b-badge variant="light">{{val_s2_grandparents_ratio}}</b-badge>
+              </b-badge>
+            </span>
           </li>
         </ol>
       </div>
@@ -283,7 +333,10 @@ export default {
           value: "",
           children: 0,
           raising_children: 0,
-          spouse: 0
+          spouse: 0,
+          parents: 0,
+          brothers: 0,
+          grandparents: 0
         }
       },
       toastCount: 0,
@@ -338,6 +391,10 @@ export default {
       this.wizard.s2.value = "";
       this.wizard.s2.children = 0;
       this.wizard.s2.raising_children = 0;
+      this.wizard.s2.spouse = 0;
+      this.wizard.s2.parents = 0;
+      this.wizard.s2.brothers = 0;
+      this.wizard.s2.grandparents = 0;
     },
     filterNonNumber: function(e) {
       let val = e.target.value.replace(/[^0-9]/g, "").replace(/^0+/, ""); // removing non-digit chars, leading zero
@@ -358,6 +415,9 @@ export default {
       this.wizard.s2.children = 0;
       this.wizard.s2.raising_children = 0;
       this.wizard.s2.spouse = 0;
+      this.wizard.s2.parents = 0;
+      this.wizard.s2.brothers = 0;
+      this.wizard.s2.grandparents = 0;
     },
     s0ValueSelected: function(e) {
       switch (this.wizard.s0.value) {
@@ -409,22 +469,32 @@ export default {
     }
   },
   computed: {
-    val_s2_children_deno: function() {
+    val_s2_total_deno: function() {
       return (
         parseInt(this.wizard.s2.children * 2) +
-        parseInt(this.wizard.s2.raising_children)
-      );
+        parseInt(this.wizard.s2.raising_children) +
+        parseInt(this.wizard.s2.spouse * 2)
+      ) * this.heir_denominator;
+    },
+    val_s2_spouse_ratio: function() {
+      let deno = this.val_s2_total_deno;
+      return this.wizard.s2.raising_children > 0 ? `${deno} 分之 2` : `${deno / 2} 分之 1`;
     },
     val_s2_children_ratio: function() {
-      let deno = this.val_s2_children_deno * this.heir_denominator;
+      let deno = this.val_s2_total_deno;
       return this.wizard.s2.raising_children > 0 ? `${deno} 分之 2` : `${deno / 2} 分之 1`;
     },
     val_s2_raising_children_ratio: function() {
-      let deno = this.val_s2_children_deno * this.heir_denominator;
-      return `${deno} 分之 1`;
+      return `${this.val_s2_total_deno} 分之 1`;
     },
-    val_s2_spouse_ratio: function() {
-      return `TODO`
+    val_s2_parents_ratio: function() {
+
+    },
+    val_s2_brothers_ratio: function() {
+
+    },
+    val_s2_grandparents_ratio: function() {
+
     },
     seen_s1_public: function() {
       return this.wizard.s1.value == "public";
@@ -475,11 +545,18 @@ export default {
     seen_s1_private_4_msg: function() {
       return this.wizard.s1.private.household > 0;
     },
+    seen_s2_counters: function() {
+      return this.wizard.s2.value;
+    },
     seen_s2_spouse_msg: function() {
       return this.wizard.s2.spouse > 0;
     },
-    seen_s2_counters: function() {
-      return this.wizard.s2.value;
+    seen_s2_children: function() {
+      return (
+        this.wizard.s2.parents == 0 &&
+        this.wizard.s2.brothers == 0 &&
+        this.wizard.s2.grandparents == 0
+      );
     },
     seen_s2_children_msg: function() {
       return this.wizard.s2.children > 0;
@@ -489,6 +566,39 @@ export default {
     },
     seen_s2_raising_children_msg: function() {
       return this.wizard.s2.raising_children > 0;
+    },
+    seen_s2_parents: function() {
+      return (
+        this.wizard.s2.children == 0 &&
+        this.wizard.s2.raising_children == 0 &&
+        this.wizard.s2.brothers == 0 &&
+        this.wizard.s2.grandparents == 0
+      );
+    },
+    seen_s2_parents_msg: function() {
+      return this.wizard.s2.parents > 0;
+    },
+    seen_s2_brothers: function() {
+      return (
+        this.wizard.s2.parents == 0 &&
+        this.wizard.s2.raising_children == 0 &&
+        this.wizard.s2.children == 0 &&
+        this.wizard.s2.grandparents == 0
+      );
+    },
+    seen_s2_brothers_msg: function() {
+      return this.wizard.s2.brothers > 0;
+    },
+    seen_s2_grandparents: function() {
+      return (
+        this.wizard.s2.parents == 0 &&
+        this.wizard.s2.raising_children == 0 &&
+        this.wizard.s2.brothers == 0 &&
+        this.wizard.s2.children == 0
+      );
+    },
+    seen_s2_grandparents_msg: function() {
+      return this.wizard.s2.grandparents > 0;
     }
   },
   components: {},
@@ -509,6 +619,7 @@ export default {
 }
 .num-counter {
   width: 2.2rem;
+  height: 1.3rem
 }
 fieldset {
   font-size: 0.85rem;
