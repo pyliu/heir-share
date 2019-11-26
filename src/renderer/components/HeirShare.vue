@@ -192,6 +192,24 @@
       <div class="border-top border-dark pt-2" v-show="seen_s2_counters">
         <ol class="d-block">
           <li>
+            <b-form-checkbox
+              v-model="wizard.s2.spouse"
+              value="1"
+              unchecked-value="0"
+              size="sm"
+              inline
+              switch
+            >
+              <span>有配偶？</span>
+            </b-form-checkbox>
+            <span v-show="seen_s2_spouse_msg" class="h5">
+              <b-badge variant="warning">
+                應繼份為
+                <b-badge variant="light">{{val_s2_spouse_ratio}}</b-badge>
+              </b-badge>
+            </span>
+          </li>
+          <li>
             <label>
               直系卑親屬
               <span v-show="seen_s2_raising_children">(含養子女)</span>
@@ -203,12 +221,12 @@
               v-model="wizard.s2.children"
               @change="filterNonNumber"
             />
-            <h5 v-show="seen_s2_children_msg">
+            <span v-show="seen_s2_children_msg" class="h5">
               <b-badge variant="warning">
-                直系卑親屬每人之應繼份為
+                應繼份為
                 <b-badge variant="light">{{val_s2_children_ratio}}</b-badge>
               </b-badge>
-            </h5>
+            </span>
             <div v-show="!seen_s2_raising_children">
               <label>養子女</label>人數：
               <input
@@ -218,12 +236,12 @@
                 v-model="wizard.s2.raising_children"
                 @change="filterNonNumber"
               />
-              <h5 v-show="seen_s2_raising_children_msg">
+              <span v-show="seen_s2_raising_children_msg" class="h5">
                 <b-badge variant="warning">
-                  養子女每人之應繼份為
+                  應繼份為
                   <b-badge variant="light">{{val_s2_raising_children_ratio}}</b-badge>
                 </b-badge>
-              </h5>
+              </span>
             </div>
           </li>
         </ol>
@@ -264,7 +282,8 @@ export default {
           seen: false,
           value: "",
           children: 0,
-          raising_children: 0
+          raising_children: 0,
+          spouse: 0
         }
       },
       toastCount: 0,
@@ -338,6 +357,7 @@ export default {
     resetS2Counter: function(e) {
       this.wizard.s2.children = 0;
       this.wizard.s2.raising_children = 0;
+      this.wizard.s2.spouse = 0;
     },
     s0ValueSelected: function(e) {
       switch (this.wizard.s0.value) {
@@ -403,6 +423,9 @@ export default {
       let deno = this.val_s2_children_deno * this.heir_denominator;
       return `${deno} 分之 1`;
     },
+    val_s2_spouse_ratio: function() {
+      return `TODO`
+    },
     seen_s1_public: function() {
       return this.wizard.s1.value == "public";
     },
@@ -451,6 +474,9 @@ export default {
     },
     seen_s1_private_4_msg: function() {
       return this.wizard.s1.private.household > 0;
+    },
+    seen_s2_spouse_msg: function() {
+      return this.wizard.s2.spouse > 0;
     },
     seen_s2_counters: function() {
       return this.wizard.s2.value;
