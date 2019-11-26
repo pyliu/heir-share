@@ -17,7 +17,7 @@
     "postinstall": ""
   },
   "build": {
-    "productName": "heir-share",
+    "productName": "繼承應繼分",
     "appId": "tw.gov.tycg.tyland.heir-share",
     "directories": {
       "output": "build"
@@ -44,7 +44,7 @@
       "icon": "build/icons/icon.icns"
     },
     "win": {
-      "icon": "build/icons/icon.ico"
+      "icon": "build/icons/taoyuan.ico"
     },
     "linux": {
       "icon": "build/icons"
