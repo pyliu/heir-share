@@ -5,7 +5,7 @@
     </div>
     <div class="my-2">
       <div class="float-right">
-        <b-button pill @click="reset" variant="outline-primary" size="sm">重設</b-button>
+        <b-button pill @click="reset" variant="outline-success" size="sm">重新開始</b-button>
       </div>
       <div>
         <span class="text-danger font-weight-bold">＊</span>
@@ -192,6 +192,7 @@
       <div class="border-top border-dark pt-2" v-show="seen_s2_counters">
         <ol class="d-block">
           <li>
+            <b-link href="#" @click="resetS2Counter" class="float-right">重設</b-link>
             <b-form-checkbox
               v-model="wizard.s2.spouse"
               value="1"
