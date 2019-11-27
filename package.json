@@ -2,8 +2,8 @@
   "name": "heir-share",
   "version": "0.8.1",
   "author": "pyliu <3634168+pyliu@users.noreply.github.com>",
-  "description": "A electron-vue app for heir share calculation",
-  "license": null,
+  "description": "A electron-vue app for heir share ratio calculation",
+  "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
