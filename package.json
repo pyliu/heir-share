@@ -17,7 +17,7 @@
     "postinstall": ""
   },
   "build": {
-    "productName": "繼承應繼分",
+    "productName": "繼承人應繼分",
     "appId": "tw.gov.tycg.tyland.heir-share",
     "directories": {
       "output": "build"
