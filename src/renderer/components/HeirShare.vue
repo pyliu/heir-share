@@ -631,7 +631,7 @@ export default {
 
 <style>
 #wrapper {
-  font-family: "微軟正黑體", "Microsoft JhenHei", Arial, Helvetica, sans-serif;
+  font-family: ARIALUNI, "微軟正黑體", "Microsoft JhenHei", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 1rem;
 }
 .bg-zhongli {
