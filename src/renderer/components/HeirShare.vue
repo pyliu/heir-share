@@ -631,25 +631,25 @@ export default {
 
 <style>
 #wrapper {
-  font-family: "微軟正黑體", "Microsoft JhenHei", sans-serif;
-  font-size: 0.85rem;
+  font-family: "微軟正黑體", "Microsoft JhenHei", Arial, Helvetica, sans-serif;
+  font-size: 1rem;
 }
 .bg-zhongli {
   background-color: #7dc750;
 }
 .num-counter {
   width: 2.2rem;
-  height: 1.3rem
+  /* height: 1.3rem */
 }
 fieldset {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
 }
 fieldset legend {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: bold;
 }
 #copyright {
-  font-size: 0.65rem;
+  font-size: 0.8rem;
 }
 .my-toast-header,
 .my-toast-body {
@@ -660,6 +660,6 @@ fieldset legend {
   width: 33% !important;
 }
 .my-popover {
-  font-size: 0.7rem !important;
+  font-size: 0.75rem !important;
 }
 </style>
