@@ -630,8 +630,12 @@ export default {
 </script>
 
 <style>
+@font-face {
+  font-family: "Microsoft JhenHei";
+  src: url(~@/assets/msjh.ttf) format("truetype");
+}
 #wrapper {
-  font-family: "微軟正黑體", "Microsoft JhenHei", Arial, Helvetica, sans-serif;
+  font-family: "Microsoft JhenHei", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 1rem;
 }
 .bg-zhongli {
