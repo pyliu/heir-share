@@ -1,5 +1,5 @@
 require('v8-compile-cache')
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, Notification } from 'electron'
 
 /**
  * Set `__static` path to static files in production
@@ -28,6 +28,11 @@ function createWindow () {
   })
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
+	const notification = new Notification({
+		title: "繼承人應繼分",
+		body: "程式已啟動"
+	}) 
+	notification.show()
   })
 
   mainWindow.loadURL(winURL)
