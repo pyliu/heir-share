@@ -1,5 +1,5 @@
 require('v8-compile-cache')
-import { app, Menu, Tray, BrowserWindow } from 'electron'
+import { app, BrowserWindow } from 'electron'
 
 /**
  * Set `__static` path to static files in production
@@ -37,18 +37,7 @@ function createWindow () {
   })
 }
 
-app.on('ready', () => {
-  tray = new Tray('../../build/icons/taoyuan.ico')
-  const contextMenu = Menu.buildFromTemplate([
-    { label: 'Item1', type: 'radio' },
-    { label: 'Item2', type: 'radio' },
-    { label: 'Item3', type: 'radio', checked: true },
-    { label: 'Item4', type: 'radio' }
-  ])
-  tray.setToolTip('This is my application.')
-  tray.setContextMenu(contextMenu)
-  createWindow();
-})
+app.on('ready', createWindow)
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

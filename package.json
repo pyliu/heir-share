@@ -1,6 +1,6 @@
 {
   "name": "heir-share",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "author": "pyliu <3634168+pyliu@users.noreply.github.com>",
   "description": "A electron-vue app for heir share ratio calculation",
   "license": "MIT",
