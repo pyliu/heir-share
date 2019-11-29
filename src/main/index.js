@@ -63,7 +63,10 @@ app.on('activate', () => {
     createWindow()
   }
 })
-
+// set appId for notification
+if (process.platform === 'win32' ) { 
+  app.setAppUserModelId(pkg.build.appId) 
+} 
 /**
  * Auto Updater
  *
