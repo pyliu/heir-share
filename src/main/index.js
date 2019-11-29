@@ -64,6 +64,7 @@ app.on('activate', () => {
   }
 })
 // set appId for notification
+import pkg from '../../package.json' 
 if (process.platform === 'win32' ) { 
   app.setAppUserModelId(pkg.build.appId) 
 } 
