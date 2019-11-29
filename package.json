@@ -44,8 +44,13 @@
       "icon": "build/icons/icon.icns"
     },
     "win": {
-      "icon": "build/icons/taoyuan.ico"
+      "icon": "build/icons/taoyuan.ico",
+	  "target": "nsis"
     },
+	"nsis": {
+	  "oneClick": false,
+	  "allowToChangeInstallationDirectory": true
+	},
     "linux": {
       "icon": "build/icons"
     }
