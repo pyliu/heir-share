@@ -300,6 +300,7 @@
       v-show="seen_chart"
       type="PieChart"
       :data="chartData"
+      :options="chartOptions"
     />
   </b-container>
 </template>
@@ -348,7 +349,10 @@ export default {
       toastCount: 0,
       heir_denominator: 1,
       now_step: null,
-      chartData: [ ['繼承人', '份數']]
+      chartData: [ ['繼承人', '份數']],
+      chartOptions: {
+        title: '每人分配圓餅圖'
+      }
     };
   },
   methods: {
@@ -430,35 +434,29 @@ export default {
     addChartData: function(name, servings, count = 1) {
       if (count < 100) {
         for (let i = 0; i < count; i++) {
-          this.chartData.push([name, servings]);
+          this.chartData.push([name, parseInt(servings)]);
         }
       }
     },
     recalS2Servings: function() {
       this.resetChartData();
-      let has_spouse = this.wizard.s2.spouse == 1;
       if (this.wizard.s2.children > 0 || this.wizard.s2.raising_children > 0) {
-        this.addChartData("配偶", this.wizard.s2.spouse * 2);
-        this.addChartData("直系卑親屬", this.wizard.s2.children * 2);
-        this.addChartData("養子女", parseInt(this.wizard.s2.raising_children));
+        this.addChartData("配偶", 2, this.wizard.s2.spouse);
+        this.addChartData("直系卑親屬", 2, this.wizard.s2.children);
+        this.addChartData("養子女", 1, this.wizard.s2.raising_children);
       } else if (this.wizard.s2.parents > 0) {
-        if (has_spouse) {
-          this.addChartData("配偶", 1);
-        }
-        this.addChartData("父母", 1);
+        this.addChartData("配偶", this.wizard.s2.parents, this.wizard.s2.spouse);
+        this.addChartData("父母", 1, this.wizard.s2.parents);
       } else if (this.wizard.s2.brothers > 0) {
-        if (has_spouse) {
-          this.addChartData("配偶", 1);
-        }
-        this.addChartData("兄弟姊妹", 1);
+        this.addChartData("配偶", this.wizard.s2.brothers, this.wizard.s2.spouse);
+        this.addChartData("兄弟姊妹", 1, this.wizard.s2.brothers);
       } else if (this.wizard.s2.grandparents > 0) {
-        if (has_spouse) {
-          this.addChartData("配偶", 2);
-        }
-        this.addChartData("祖父母", 1);
-      } else if (this.wizard.s2.spouse > 0) {
-        this.addChartData("配偶", 1);
+        this.addChartData("配偶", this.wizard.s2.grandparents * 3, this.wizard.s2.spouse);
+        this.addChartData("祖父母", 2, this.wizard.s2.grandparents);
       }
+      // else if (this.wizard.s2.spouse > 0) {
+      //   this.addChartData("配偶", 1);
+      // }
     },
     s0ValueSelected: function(e) {
       switch (this.wizard.s0.value) {
