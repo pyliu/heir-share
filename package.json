@@ -1,6 +1,6 @@
 {
   "name": "heir-share",
-  "version": "0.8.2",
+  "version": "0.9.0",
   "author": "pyliu <3634168+pyliu@users.noreply.github.com>",
   "description": "A electron-vue app for heir share ratio calculation",
   "license": "MIT",
@@ -45,12 +45,12 @@
     },
     "win": {
       "icon": "build/icons/taoyuan.ico",
-	  "target": "nsis"
+      "target": "nsis"
     },
-	"nsis": {
-	  "oneClick": false,
-	  "allowToChangeInstallationDirectory": true
-	},
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
     "linux": {
       "icon": "build/icons"
     }
@@ -63,6 +63,7 @@
     "v8-compile-cache": "^2.1.0",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
+    "vue-google-charts": "^0.3.2",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
     "vuex-electron": "^1.0.0"

@@ -54,10 +54,10 @@
       <legend class="w-auto">{{wizard.s1.legend}}</legend>
       <div class="row text-center">
         <label class="col-6">
-          <input type="radio" v-model="wizard.s1.value" value="public" @change="s1ValueSelected" /> 家產
+          <input type="radio" v-model="wizard.s1.value" value="public" /> 家產
         </label>
         <label class="col-6">
-          <input type="radio" v-model="wizard.s1.value" value="private" @change="s1ValueSelected" /> 私產
+          <input type="radio" v-model="wizard.s1.value" value="private" /> 私產
         </label>
       </div>
       <div class="border-top border-dark pt-2" v-show="seen_s1_public">
@@ -400,11 +400,6 @@ export default {
     filterNonNumber: function(e) {
       let val = e.target.value.replace(/[^0-9]/g, "").replace(/^0+/, ""); // removing non-digit chars, leading zero
       e.target.value = Math.abs(val || 0);
-      // this.makeToast(e.target.value, {
-      //   variant: "danger",
-      //   noAutoHide: false,
-      //   title: e.target.id
-      // });
     },
     resetS1PrivateCounter: function(e) {
       this.wizard.s1.private.child = 0;
@@ -441,32 +436,13 @@ export default {
       }
       this.now_step.seen = true;
     },
-    s1ValueSelected: function(e) {
-      switch (this.wizard.s1.value) {
-        case "public":
-          console.log(`s1: 家產 ${this.wizard.s1.value} selected`);
-          break;
-        case "private":
-          console.log(`s1: 私產 ${this.wizard.s1.value} selected`);
-          break;
-        default:
-          console.error(`Not supported: ${this.wizard.s1.value}.`);
-          return;
-      }
-    },
     s2ValueSelected: function(e) {
-      switch (this.wizard.s2.value) {
-        case "7464":
-          console.log(`s2: 74年6月4日以前 ${this.wizard.s2.value} selected`);
-          break;
-        case "7465":
-          console.log(`s2: 74年6月5日以後 ${this.wizard.s2.value} selected`);
-          break;
-        default:
-          console.error(`Not supported: ${this.wizard.s2.value}.`);
-          return;
-      }
       this.resetS2Counter(e);
+    },
+    disableDrag: function(e) {
+      e.preventDefault();
+      e.dataTransfer.effectAllowed = 'none';
+      e.dataTransfer.dropEffect = 'none';
     }
   },
   computed: {
@@ -625,6 +601,14 @@ export default {
   mounted: function() {
     // like jQuery ready
     this.now_step = this.wizard.s0;
+    this.makeToast("mounted!", {
+      variant: "info",
+      noAutoHide: false,
+      title: "啟動"
+    });
+    window.addEventListener( 'dragenter' , this.disableDrag, false );
+    window.addEventListener( 'dragover' , this.disableDrag);
+    window.addEventListener( 'drop' , this.disableDrag);
   }
 };
 </script>
