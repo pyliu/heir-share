@@ -22,8 +22,8 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     useContentSize: true,
     width: 518,
-    height: 525,
-    resizable: false,		//是否允許拉伸大小 
+    height: 600,
+    resizable: true,		//是否允許拉伸大小 
     show: false,			//建立後是否顯示 
     frame: true ,			//是否建立 frameless 窗口 
     fullscreenable: false , //是否允許全螢幕 

@@ -43,9 +43,6 @@
         >
           <input type="radio" v-model.number="wizard.s0.value" value="0" @change="s0ValueSelected" /> 光復後
         </label>
-        <!-- <label class="col">
-                <input type="radio" v-model.number="wizard.s0.value" value="1" @change="s0ValueSelected" /> 光復後【民國74年6月5日以後】
-        </label>-->
       </div>
     </fieldset>
 
@@ -54,10 +51,10 @@
       <legend class="w-auto">{{wizard.s1.legend}}</legend>
       <div class="row text-center">
         <label class="col-6">
-          <input type="radio" v-model="wizard.s1.value" value="public" /> 家產
+          <input type="radio" v-model="wizard.s1.value" value="public" @change="s1ValueSelected" /> 家產
         </label>
         <label class="col-6">
-          <input type="radio" v-model="wizard.s1.value" value="private" /> 私產
+          <input type="radio" v-model="wizard.s1.value" value="private" @change="s1ValueSelected" /> 私產
         </label>
       </div>
       <div class="border-top border-dark pt-2" v-show="seen_s1_public">
@@ -225,7 +222,7 @@
               />
               <span v-show="seen_s2_children_msg" class="h5">
                 <b-badge variant="warning">
-                  應繼份為
+                  每人應繼份為
                   <b-badge variant="light">{{val_s2_children_ratio}}</b-badge>
                 </b-badge>
               </span>
@@ -241,7 +238,7 @@
               />
               <span v-show="seen_s2_raising_children_msg" class="h5">
                 <b-badge variant="warning">
-                  應繼份為
+                  每人應繼份為
                   <b-badge variant="light">{{val_s2_raising_children_ratio}}</b-badge>
                 </b-badge>
               </span>
@@ -258,7 +255,7 @@
             />
             <span v-show="seen_s2_parents_msg" class="h5">
               <b-badge variant="warning">
-                應繼份為
+                每人應繼份為
                 <b-badge variant="light">{{val_s2_parents_ratio}}</b-badge>
               </b-badge>
             </span>
@@ -274,7 +271,7 @@
             />
             <span v-show="seen_s2_brothers_msg" class="h5">
               <b-badge variant="warning">
-                應繼份為
+                每人應繼份為
                 <b-badge variant="light">{{val_s2_brothers_ratio}}</b-badge>
               </b-badge>
             </span>
@@ -290,7 +287,7 @@
             />
             <span v-show="seen_s2_grandparents_msg" class="h5">
               <b-badge variant="warning">
-                應繼份為
+                每人應繼份為
                 <b-badge variant="light">{{val_s2_grandparents_ratio}}</b-badge>
               </b-badge>
             </span>
@@ -298,6 +295,12 @@
         </ol>
       </div>
     </fieldset>
+
+    <GChart
+      v-show="seen_chart"
+      type="PieChart"
+      :data="chartData"
+    />
   </b-container>
 </template>
 
@@ -318,7 +321,9 @@ export default {
           legend: "被繼承財產種類",
           seen: false,
           value: "",
-          public: { count: 0 },
+          public: {
+            count: 0
+          },
           private: {
             child: 0,
             spouse: 0,
@@ -342,7 +347,8 @@ export default {
       },
       toastCount: 0,
       heir_denominator: 1,
-      now_step: null
+      now_step: null,
+      chartData: [ ['繼承人', '份數']]
     };
   },
   methods: {
@@ -401,6 +407,9 @@ export default {
       let val = e.target.value.replace(/[^0-9]/g, "").replace(/^0+/, ""); // removing non-digit chars, leading zero
       e.target.value = Math.abs(val || 0);
     },
+    resetS1PublicCounter: function(e) {
+      this.wizard.s1.public.count = 0;
+    },
     resetS1PrivateCounter: function(e) {
       this.wizard.s1.private.child = 0;
       this.wizard.s1.private.spouse = 0;
@@ -415,16 +424,51 @@ export default {
       this.wizard.s2.brothers = 0;
       this.wizard.s2.grandparents = 0;
     },
+    resetChartData: function() {
+      this.chartData = [ ['繼承人', '份數'] ];
+    },
+    addChartData: function(name, servings, count = 1) {
+      if (count < 100) {
+        for (let i = 0; i < count; i++) {
+          this.chartData.push([name, servings]);
+        }
+      }
+    },
+    recalS2Servings: function() {
+      this.resetChartData();
+      let has_spouse = this.wizard.s2.spouse == 1;
+      if (this.wizard.s2.children > 0 || this.wizard.s2.raising_children > 0) {
+        this.addChartData("配偶", this.wizard.s2.spouse * 2);
+        this.addChartData("直系卑親屬", this.wizard.s2.children * 2);
+        this.addChartData("養子女", parseInt(this.wizard.s2.raising_children));
+      } else if (this.wizard.s2.parents > 0) {
+        if (has_spouse) {
+          this.addChartData("配偶", 1);
+        }
+        this.addChartData("父母", 1);
+      } else if (this.wizard.s2.brothers > 0) {
+        if (has_spouse) {
+          this.addChartData("配偶", 1);
+        }
+        this.addChartData("兄弟姊妹", 1);
+      } else if (this.wizard.s2.grandparents > 0) {
+        if (has_spouse) {
+          this.addChartData("配偶", 2);
+        }
+        this.addChartData("祖父母", 1);
+      } else if (this.wizard.s2.spouse > 0) {
+        this.addChartData("配偶", 1);
+      }
+    },
     s0ValueSelected: function(e) {
       switch (this.wizard.s0.value) {
         case -1:
+          // 光復前
           this.now_step = this.wizard.s1;
-          //this.now_step.legend = "光復前【民國34年10月24日以前】";
           break;
         case 0:
-        case 1:
+          // 光復後
           this.now_step = this.wizard.s2;
-          //this.now_step.legend = "光復後【民國74年6月" + (this.wizard.s0.value == 1 ? "5日以後】" : "4日以前】");
           break;
         default:
           console.error(`Not supported: ${this.wizard.s0.value}.`);
@@ -436,6 +480,10 @@ export default {
       }
       this.now_step.seen = true;
     },
+    s1ValueSelected: function(e) {
+      this.resetS1PublicCounter(e);
+      this.resetS1PrivateCounter(e);
+    },
     s2ValueSelected: function(e) {
       this.resetS2Counter(e);
     },
@@ -443,6 +491,52 @@ export default {
       e.preventDefault();
       e.dataTransfer.effectAllowed = 'none';
       e.dataTransfer.dropEffect = 'none';
+    }
+  },
+  watch: {
+    "wizard.s1.public.count": function() {
+      this.resetChartData();
+      this.addChartData("繼承人", 1, this.wizard.s1.public.count);
+    },
+    "wizard.s1.private.child": function() {
+      this.resetChartData();
+      this.addChartData("直系卑親屬(男)", 1, this.wizard.s1.private.child);
+    },
+    "wizard.s1.private.spouse": function() {
+      if (this.wizard.s1.private.spouse > 1) {
+        this.wizard.s1.private.spouse = 1;
+      }
+      this.resetChartData();
+      this.addChartData("配偶", 1, this.wizard.s1.private.spouse);
+    },
+    "wizard.s1.private.parent": function() {
+      this.resetChartData();
+      this.addChartData("直系尊親屬", 1, this.wizard.s1.private.parent);
+    },
+    "wizard.s1.private.household": function() {
+      if (this.wizard.s1.private.household > 1) {
+        this.wizard.s1.private.household = 1;
+      }
+      this.resetChartData();
+      this.addChartData("戶主", 1, this.wizard.s1.private.household);
+    },
+    "wizard.s2.spouse": function() {
+      this.recalS2Servings();
+    },
+    "wizard.s2.children": function() {
+      this.recalS2Servings();
+    },
+    "wizard.s2.raising_children": function() {
+      this.recalS2Servings();
+    },
+    "wizard.s2.parents": function() {
+      this.recalS2Servings();
+    },
+    "wizard.s2.brothers": function() {
+      this.recalS2Servings();
+    },
+    "wizard.s2.grandparents": function() {
+      this.recalS2Servings();
     }
   },
   computed: {
@@ -595,17 +689,20 @@ export default {
     },
     seen_s2_grandparents_msg: function() {
       return this.wizard.s2.grandparents > 0;
+    },
+    seen_chart: function() {
+      return this.chartData.length > 1;
     }
   },
   components: {},
   mounted: function() {
     // like jQuery ready
     this.now_step = this.wizard.s0;
-    this.makeToast("mounted!", {
-      variant: "info",
-      noAutoHide: false,
-      title: "啟動"
-    });
+    // this.makeToast("mounted!", {
+    //   variant: "info",
+    //   noAutoHide: false,
+    //   title: "啟動"
+    // });
     window.addEventListener( 'dragenter' , this.disableDrag, false );
     window.addEventListener( 'dragover' , this.disableDrag);
     window.addEventListener( 'drop' , this.disableDrag);
