@@ -295,7 +295,6 @@
         </ol>
       </div>
     </fieldset>
-
     <GChart
       v-show="seen_chart"
       type="PieChart"

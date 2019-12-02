@@ -1,5 +1,7 @@
 # heir-share
 
+<img src="snap.jpg" />
+
 > A electron-vue app for heir share calculation
 
 #### Build Setup
