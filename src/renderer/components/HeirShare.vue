@@ -362,7 +362,12 @@ export default {
 		"201, 65, 149",
 		"148, 88, 200",
 		"251, 218, 137",
-		"193, 247, 215"
+		"193, 247, 215",
+		"252, 116, 4",
+		"242, 193, 135",
+		"60, 108, 4",
+		"150, 140, 107",
+		"206, 170, 155"
 	  ],
 	  color_codes_next: 0,
       vueChartData: {
@@ -377,6 +382,7 @@ export default {
         responsive: true,
         maintainAspectRatio: false,
         legend: {
+			position: 'right',
             display: true,
             labels: { fontSize: 11 }
         }
@@ -473,8 +479,8 @@ export default {
           this.vueChartData.datasets[0].backgroundColor.push(`rgba(${color}, 0.8)`);
           this.vueChartData.datasets[0].borderColor.push(`rgba(${color}, 1)`);
         }
-        // hide legend if count over 10
-        this.vueChartOptions.legend.display = this.vueChartData.labels.length <= 10;
+        // hide legend if count over 16
+        this.vueChartOptions.legend.display = this.vueChartData.labels.length <= 16;
     },
     recalS2Servings: function() {
       this.resetChartData();
