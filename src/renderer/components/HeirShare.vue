@@ -295,16 +295,19 @@
         </ol>
       </div>
     </fieldset>
-    <GChart
-      v-show="seen_chart"
-      type="PieChart"
-      :data="chartData"
-      :options="chartOptions"
-    />
+    
+    <div class="my-2">
+      <heir-pie-chart v-show="seen_chart" :styles="vueChartStyle" :chartdata="vueChartData" :options="vueChartOptions" />
+    </div>
+    <p id="copyright" class="text-center text-muted fixed-bottom p-2 my-2 mx-3 bg-white border rounded" style="font-size:0.65rem">
+      <a href="https://github.com/pyliu/heir-share" target="_blank" title="View project on Github!"><svg class="octicon octicon-mark-github v-align-middle" height="16" viewBox="0 0 16 16" version="1.1" width="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path></svg></a>
+      &nbsp;<strong>&copy; 2019 LIU, PANG-YU</strong>
+    </p>
   </b-container>
 </template>
 
 <script>
+import HeirPieChart from "@/components/HeirPieChart"
 export default {
   data: function() {
     return {
@@ -348,9 +351,24 @@ export default {
       toastCount: 0,
       heir_denominator: 1,
       now_step: null,
-      chartData: [ ['繼承人', '份數']],
-      chartOptions: {
-        title: '每人分配圓餅圖'
+      vueChartData: {
+        labels: [],
+        datasets: [{
+          label: '繼承分配表',
+          data: [],
+          borderWidth: 1
+        }]
+      },
+      vueChartOptions: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+            display: true,
+            labels: { fontSize: 11 }
+        }
+      },
+      vueChartStyle: {
+        height: "180px"
       }
     };
   },
@@ -428,14 +446,24 @@ export default {
       this.wizard.s2.grandparents = 0;
     },
     resetChartData: function() {
-      this.chartData = [ ['繼承人', '份數'] ];
+      this.vueChartData.labels = [];
+      this.vueChartData.datasets[0].data = [];
+      this.vueChartData.datasets[0].backgroundColor = [];
+      this.vueChartData.datasets[0].borderColor = [];
     },
     addChartData: function(name, servings, count = 1) {
-      if (count < 100) {
         for (let i = 0; i < count; i++) {
-          this.chartData.push([name, parseInt(servings)]);
+          this.vueChartData.labels.push(name);
+          this.vueChartData.datasets[0].data.push(parseInt(servings));
+          let color = `${this.getRandomInt()}, ${this.getRandomInt()}, ${this.getRandomInt()}`;
+          this.vueChartData.datasets[0].backgroundColor.push(`rgba(${color}, 0.2)`);
+          this.vueChartData.datasets[0].borderColor.push(`rgba(${color}, 1)`);
         }
-      }
+        // hide legend if count over 10
+        this.vueChartOptions.legend.display = this.vueChartData.labels.length <= 10;
+    },
+    getRandomInt () {
+      return Math.floor(Math.random() * 255);
     },
     recalS2Servings: function() {
       this.resetChartData();
@@ -453,9 +481,9 @@ export default {
         this.addChartData("配偶", this.wizard.s2.grandparents * 3, this.wizard.s2.spouse);
         this.addChartData("祖父母", 2, this.wizard.s2.grandparents);
       }
-      // else if (this.wizard.s2.spouse > 0) {
-      //   this.addChartData("配偶", 1);
-      // }
+      else if (this.wizard.s2.spouse > 0) {
+        this.addChartData("配偶", 1);
+      }
     },
     s0ValueSelected: function(e) {
       switch (this.wizard.s0.value) {
@@ -688,10 +716,10 @@ export default {
       return this.wizard.s2.grandparents > 0;
     },
     seen_chart: function() {
-      return this.chartData.length > 1;
+      return this.vueChartData.labels.length > 0;
     }
   },
-  components: {},
+  components: { HeirPieChart },
   mounted: function() {
     // like jQuery ready
     this.now_step = this.wizard.s0;
@@ -707,14 +735,14 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 @font-face {
   font-family: "Microsoft JhenHei";
   src: url(~@/assets/msjh.ttf) format("truetype");
 }
 #wrapper {
   font-family: "Microsoft JhenHei", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 1rem;
+  font-size: .9rem;
 }
 .bg-zhongli {
   background-color: #7dc750;
@@ -724,14 +752,14 @@ export default {
   /* height: 1.3rem */
 }
 fieldset {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 fieldset legend {
   font-size: 1.2rem;
   font-weight: bold;
 }
 #copyright {
-  font-size: 0.8rem;
+  font-size: 0.65rem;
 }
 .my-toast-header,
 .my-toast-body {

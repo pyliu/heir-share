@@ -11,8 +11,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 Vue.use(BootstrapVue);
 
-import VueGoogleCharts from 'vue-google-charts'
-Vue.use(VueGoogleCharts)
+import HeirPieChart from './components/HeirPieChart.vue'
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
