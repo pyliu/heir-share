@@ -742,7 +742,7 @@ export default {
 }
 #wrapper {
   font-family: "Microsoft JhenHei", 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-size: .9rem;
+  font-size: 1rem;
 }
 .bg-zhongli {
   background-color: #7dc750;
@@ -752,14 +752,14 @@ export default {
   /* height: 1.3rem */
 }
 fieldset {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 }
 fieldset legend {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: bold;
 }
 #copyright {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
 }
 .my-toast-header,
 .my-toast-body {
