@@ -351,6 +351,20 @@ export default {
       toastCount: 0,
       heir_denominator: 1,
       now_step: null,
+	  color_codes: [
+	    "2, 117, 216",
+	    "92, 184, 92",
+	    "91, 192, 222",
+		"240, 173, 78",
+		"217, 83, 79",
+		"41, 43, 44",
+		"73, 5, 245",
+		"201, 65, 149",
+		"148, 88, 200",
+		"251, 218, 137",
+		"193, 247, 215"
+	  ],
+	  color_codes_next: 0,
       vueChartData: {
         labels: [],
         datasets: [{
@@ -455,15 +469,12 @@ export default {
         for (let i = 0; i < count; i++) {
           this.vueChartData.labels.push(name);
           this.vueChartData.datasets[0].data.push(parseInt(servings));
-          let color = `${this.getRandomInt()}, ${this.getRandomInt()}, ${this.getRandomInt()}`;
-          this.vueChartData.datasets[0].backgroundColor.push(`rgba(${color}, 0.2)`);
+          let color = this.color_codes[this.color_codes_next++ % this.color_codes.length];
+          this.vueChartData.datasets[0].backgroundColor.push(`rgba(${color}, 0.8)`);
           this.vueChartData.datasets[0].borderColor.push(`rgba(${color}, 1)`);
         }
         // hide legend if count over 10
         this.vueChartOptions.legend.display = this.vueChartData.labels.length <= 10;
-    },
-    getRandomInt () {
-      return Math.floor(Math.random() * 255);
     },
     recalS2Servings: function() {
       this.resetChartData();
