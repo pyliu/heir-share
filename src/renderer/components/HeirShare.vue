@@ -351,25 +351,25 @@ export default {
       toastCount: 0,
       heir_denominator: 1,
       now_step: null,
-	  color_codes: [
-	    "2, 117, 216",
-	    "92, 184, 92",
-	    "91, 192, 222",
-		"240, 173, 78",
-		"217, 83, 79",
-		"41, 43, 44",
-		"73, 5, 245",
-		"201, 65, 149",
-		"148, 88, 200",
-		"251, 218, 137",
-		"193, 247, 215",
-		"252, 116, 4",
-		"242, 193, 135",
-		"60, 108, 4",
-		"150, 140, 107",
-		"206, 170, 155"
-	  ],
-	  color_codes_next: 0,
+      color_codes: [
+        "2, 117, 216",
+        "92, 184, 92",
+        "91, 192, 222",
+        "240, 173, 78",
+        "217, 83, 79",
+        "41, 43, 44",
+        "73, 5, 245",
+        "201, 65, 149",
+        "148, 88, 200",
+        "251, 218, 137",
+        "193, 247, 215",
+        "252, 116, 4",
+        "242, 193, 135",
+        "60, 108, 4",
+        "150, 140, 107",
+        "206, 170, 155"
+      ],
+      color_codes_next: 0,
       vueChartData: {
         labels: [],
         datasets: [{
@@ -381,10 +381,11 @@ export default {
       vueChartOptions: {
         responsive: true,
         maintainAspectRatio: false,
+        title: true,
         legend: {
-			position: 'right',
-            display: true,
-            labels: { fontSize: 11 }
+			    position: 'right',
+          display: true,
+          labels: { fontSize: 11 }
         }
       },
       vueChartStyle: {
@@ -495,7 +496,7 @@ export default {
         this.addChartData("配偶", this.wizard.s2.brothers, this.wizard.s2.spouse);
         this.addChartData("兄弟姊妹", 1, this.wizard.s2.brothers);
       } else if (this.wizard.s2.grandparents > 0) {
-        this.addChartData("配偶", this.wizard.s2.grandparents * 3, this.wizard.s2.spouse);
+        this.addChartData("配偶", this.wizard.s2.grandparents * 4, this.wizard.s2.spouse);
         this.addChartData("祖父母", 2, this.wizard.s2.grandparents);
       }
       else if (this.wizard.s2.spouse > 0) {

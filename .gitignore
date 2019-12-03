@@ -13,3 +13,4 @@ yarn.lock
 .travis.yml
 .babelrc
 package-lock.json
+*.log
